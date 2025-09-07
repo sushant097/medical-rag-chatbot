@@ -105,6 +105,7 @@ newgrp docker
 Go to GitHub:  
 `Settings > Actions > Runners > New self-hosted runner > Choose OS > Run the provided commands`
 
+
 ### 7. Setup GitHub secrets
 
 - `AWS_ACCESS_KEY_ID`
