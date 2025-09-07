@@ -56,7 +56,7 @@ Now, open up `localhost:` in your browser to interact with the chatbot.
 - Python
 - LangChain
 - Flask
-- GPT
+- OpenAI
 - Pinecone
 
 ---
@@ -83,9 +83,6 @@ Now, open up `localhost:` in your browser to interact with the chatbot.
   - `AmazonEC2FullAccess`
 
 ### 3. Create ECR repo to store/save Docker image
-
-- Save the URI (example):  
-  `315865595366.dkr.ecr.us-east-1.amazonaws.com/medicalbot`
 
 ### 4. Create EC2 machine (Ubuntu)
 
@@ -138,4 +135,4 @@ Pull requests are welcome. For major changes, please open an issue first to disc
 
 ## License
 
-[MIT](LICENSE) (or specify your license here)
+[MIT](LICENSE)  
