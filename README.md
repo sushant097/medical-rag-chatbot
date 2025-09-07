@@ -83,6 +83,7 @@ Now, open up `localhost:` in your browser to interact with the chatbot.
   - `AmazonEC2FullAccess`
 
 ### 3. Create ECR repo to store/save Docker image
+- add repo name as project secret later for CICD.
 
 ### 4. Create EC2 machine (Ubuntu)
 
