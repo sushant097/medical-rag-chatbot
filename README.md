@@ -1,89 +1,55 @@
 
 # 🩺 Medical RAG Chatbot – LangChain, Pinecone, Flask, AWS
 
-A **Retrieval-Augmented Generation (RAG) Medical Chatbot** that can answer user queries using a custom medical knowledge base.  
+A **Retrieval-Augmented Generation (RAG) Medical Chatbot** that answers user queries using a custom medical knowledge base.  
 It combines **Large Language Models (LLMs)** with **vector search** to provide grounded, context-aware answers instead of relying purely on the model’s memory.
 
-This project is designed as part of **end-to-end AI application development**, covering data ingestion, embeddings, retrieval, UI, and cloud deployment.
+This project demonstrates **end-to-end AI application development**, covering data ingestion, embeddings, retrieval, UI, and cloud deployment.
 
 ---
 
 ## 🚀 Features
 
-- **Retrieval-Augmented Generation (RAG):** Answers are grounded in your uploaded medical corpus.  
-- **Custom Knowledge Base:** Documents are embedded and stored in Pinecone for fast similarity search.  
-- **Modern Web UI:** Flask + Bootstrap chat interface with dark/light mode, medical theme, and responsive design.  
-- **Cloud Native:** Containerized with Docker and deployable to AWS (ECR + EC2) via GitHub Actions CI/CD.  
-- **Secure Setup:** Environment variables for API keys, `.gitignore` to prevent secrets leakage.  
+- **Retrieval-Augmented Generation (RAG):** Answers are grounded in a curated medical corpus.  
+- **Custom Knowledge Base:** Documents embedded and stored in Pinecone for fast semantic search.  
+- **Modern Web UI:** Flask + Bootstrap chat interface with dark/light mode and medical-themed styling.  
+- **Cloud Native:** Containerized with Docker, deployable on AWS (ECR + EC2) via GitHub Actions CI/CD.  
+- **Secure Setup:** Environment variables for API keys; `.gitignore` prevents sensitive files from leaking.  
 
 ---
 
 ## 🧠 How It Works (Approach)
 
-1. **Load Data**  
-   - Medical documents (PDFs, research, FAQs, etc.) are preprocessed into chunks.  
-
-2. **Generate Embeddings**  
-   - Each chunk is embedded using OpenAI embeddings (or other models).  
-
-3. **Store in Pinecone**  
-   - Embeddings are upserted into a Pinecone vector database for scalable semantic search.  
-
-4. **User Query → Retrieval**  
-   - When the user asks a question, the chatbot retrieves the most relevant chunks from Pinecone.  
-
-5. **RAG Pipeline**  
-   - LangChain combines retrieved chunks with the user’s query and feeds it into the LLM.  
-
-6. **Answer Generation**  
-   - The LLM (via OpenAI) generates a contextual, medically grounded response.  
-
-7. **Flask Web UI**  
-   - The response is displayed in a chat-style UI built with Bootstrap, including timestamps and user/bot avatars.  
+1. **Load Data** → Preprocess PDFs, FAQs, or notes into clean text chunks.  
+2. **Generate Embeddings** → Each chunk embedded with OpenAI embeddings.  
+3. **Store in Pinecone** → Embeddings + metadata are stored for similarity search.  
+4. **Query Processing** → User query hits Flask API, LangChain retrieves top-k matches from Pinecone.  
+5. **RAG Pipeline** → Retrieved context + query passed into GPT.  
+6. **Answer Generation** → GPT produces a grounded medical response.  
+7. **Web UI** → Flask renders answers in a chat interface with timestamps and disclaimers.  
 
 ---
 
 ## 📊 System Design
 
 ### 🔄 RAG Runtime Flow
-
-![](images/rag_runtime_block.png)
-When a user asks a question in the chat UI:
-
-1. The query goes to Flask (`/get`).
-2. LangChain retrieves top-k chunks from Pinecone.
-3. Context is assembled into a prompt.
-4. OpenAI GPT generates a grounded response.
-5. The answer is returned to the chat UI with disclaimer formatting.
-
+![](images/rag_runtime_block.png)  
+When a user asks a question, Flask forwards it to LangChain, Pinecone retrieves relevant chunks, GPT generates an answer, and the response is sent back to the UI.
 
 ### 📥 Data Ingestion Flow
-
-![](images/data_ingestion_block.png)
-Before answering questions, medical documents are prepared:
-
-1. Load PDFs, FAQs, or research notes.
-2. Clean and normalize the text.
-3. Split into overlapping chunks.
-4. Generate embeddings with OpenAI.
-5. Store them in Pinecone for fast semantic search.
-
+![](images/data_ingestion_block.png)  
+Medical documents are loaded, cleaned, chunked, embedded using OpenAI, and stored in Pinecone for retrieval.
 
 ### 🚀 CI/CD Deployment Flow
-
-![](images/cicd_block.png)
-Code is deployed automatically using GitHub Actions + AWS:
-
-1. Push changes to GitHub.
-2. GitHub Actions builds and pushes Docker images to Amazon ECR.
-3. EC2 (self-hosted runner) pulls the image.
-4. Flask app container runs on port `8080`, serving the chatbot to end users.
+![](images/cicd_block.png)  
+GitHub Actions builds and pushes Docker images to Amazon ECR.  
+EC2 self-hosted runners pull and run the container, exposing the chatbot on port `8080`.
 
 ---
 
 ## 🖥️ Demo
 
-👉 *Placeholder for gifhy demo*  
+![](images/medichatbot.gif)
 
 ---
 
@@ -91,53 +57,76 @@ Code is deployed automatically using GitHub Actions + AWS:
 
 - **Python 3.11**  
 - **LangChain** – RAG orchestration  
-- **Pinecone** – Vector DB for semantic search  
+- **Pinecone** – Vector database  
 - **OpenAI GPT** – LLM for natural language answers  
-- **Flask** – Web server and chatbot interface  
-- **Bootstrap 5 / FontAwesome** – Modern chat UI  
+- **Flask** – Backend + chat UI  
+- **Bootstrap 5 / FontAwesome** – UI styling  
 - **Docker** – Containerization  
-- **AWS (ECR + EC2 + GitHub Actions)** – CI/CD and deployment  
+- **AWS (ECR + EC2 + GitHub Actions)** – Deployment pipeline  
 
 ---
 
-## ⚡ Quickstart (Local)
+## ⚡ Run Options
 
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/sushant097/medical-rag-chatbot.git
-   cd medical-rag-chatbot
-    ````
+There are three easy ways to run this project:
 
-2. **Create a conda environment**
-
-   ```bash
-   conda create -n medichatbot python=3.11 -y
-   conda activate medichatbot
-   ```
-
-3. **Install dependencies**
-
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-4. **Create a `.env` file**
-   Add your credentials:
-
+### ✅ Option 1: Easiest (run.sh)
+1. Create a `.env` file in the root:
    ```ini
    PINECONE_API_KEY="xxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
    OPENAI_API_KEY="xxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-   ```
+    ````
 
-5. **Run setup + start app**
+2. Make the script executable and run:
 
    ```bash
    chmod +x run.sh
    ./run.sh
    ```
 
-6. **Access the chatbot**
-   Open [http://127.0.0.1:8080](http://127.0.0.1:8080) in your browser.
+This will initialize Pinecone (if not already), install dependencies, and start the app.
+Open [http://127.0.0.1:8080](http://127.0.0.1:8080).
+
+---
+
+### 📝 Option 2: Manual Sequential Steps
+
+For finer control, you can run everything step by step:
+
+```bash
+# 1. Clone
+git clone https://github.com/sushant097/medical-rag-chatbot.git
+cd medical-rag-chatbot
+
+# 2. Create conda environment
+conda create -n medichatbot python=3.11 -y
+conda activate medichatbot
+
+# 3. Install dependencies
+pip install -r requirements.txt
+
+# 4. Add .env file with Pinecone + OpenAI keys
+
+# 5. Store embeddings
+python store_index.py
+
+# 6. Start app
+python app.py
+```
+
+---
+
+### 🐳 Option 3: Docker
+
+If you prefer Dockerized deployment:
+
+```bash
+# Build image
+docker build -t medibot .
+
+# Run container with env vars from .env
+docker run -d -p 8080:8080 --env-file .env medibot
+```
 
 ---
 
@@ -145,14 +134,9 @@ Code is deployed automatically using GitHub Actions + AWS:
 
 This repo includes a **GitHub Actions workflow** (`.github/workflows/cicd.yaml`) for seamless deployment:
 
-1. Build and push Docker image to **Amazon ECR**.
-2. Launch **EC2 self-hosted runner**.
-3. Pull and run the latest image with environment variables injected from GitHub Secrets.
-
-Required AWS IAM Policies:
-
-* `AmazonEC2ContainerRegistryFullAccess`
-* `AmazonEC2FullAccess`
+1. Build & push Docker image to **Amazon ECR**.
+2. EC2 self-hosted runner pulls the image.
+3. Flask app runs in a container on port `8080`.
 
 Required GitHub Secrets:
 
@@ -192,3 +176,4 @@ Required GitHub Secrets:
 ## 📜 License
 
 [MIT](LICENSE)
+
