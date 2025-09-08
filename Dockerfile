@@ -1,9 +1,12 @@
 FROM python:3.11-slim-buster
-
 WORKDIR /app
 
-COPY . /app
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
 
-RUN pip install -r requirements.txt
+COPY . .
 
-CMD ["python3", "app.py"]
+EXPOSE 8080
+
+# Run embeddings first, then start app
+CMD ["sh", "-c", "python store_index.py && python app.py"]
